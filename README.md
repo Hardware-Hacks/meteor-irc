@@ -1,7 +1,7 @@
 meteor-irc
 ___
 
-An IRC API specifically designed for use with Meteor
+An IRC package specifically designed for use with Meteor
 
 ###Example Usage
 

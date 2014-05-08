@@ -1,5 +1,4 @@
 Meteor.publish('ircMessages', function(channel, limit) {
-  console.log(channel, limit);
   var count = IRCMessages.find({channel: channel}).count();
   var boundary = 0;
 
@@ -12,4 +11,8 @@ Meteor.publish('ircMessages', function(channel, limit) {
 
 Meteor.publish('ircChannels', function() {
   return IRCChannels.find({});
+});
+
+Meteor.publish('ircConnections', function() {
+  return IRCConnections.find({});
 });

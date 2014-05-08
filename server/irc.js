@@ -6,7 +6,7 @@ var net = Npm.require('net');
  * Creates the IRC instance
  * @param params optional preferences for the connection
  */
-IRC = function(params) {
+IRC = function IRC(params) {
   this.connection = null;
   this.buffer = '';
   this.options = {
@@ -54,6 +54,9 @@ IRC.prototype.connect = function() {
         case "PING":
           self.send("PONG", line.args[0]);
           break;
+        case "VERSION":
+          self.send("METEOR-IRC 1.0", line.args[0]);
+          break;
         case "PRIVMSG":
           var handle = line.nick;
           var channel   = line.args[0];
@@ -84,8 +87,32 @@ IRC.prototype.connect = function() {
   });
 
   this.connection.addListener('close', function() {
-    if(this.config.debug) console.log('disconnected');
+    if(self.config.debug) console.log('disconnected');
   })
+};
+
+/**
+ *join 
+ *
+ * sends a join command to the irc server
+ * @param channel to join
+ */
+IRC.prototype.join = function(channel) {
+  if(this.connection) {
+    this.send.apply(this, ['JOIN'].concat(channel));
+  }
+};
+
+/**
+ *part 
+ *
+ * sends a part command to the irc server
+ * @param channel to part
+ */
+IRC.prototype.part = function(channel) {
+  if(this.connection) {
+    this.send.apply(this, ['PART'].concat(channel));
+  }
 };
 
 /**
@@ -127,7 +154,7 @@ IRC.prototype.say = function(channel, message) {
 IRC.prototype.disconnect = function(msg) {
   var message = msg || 'Powered by Meteor-IRC http://github.com/Pent/meteor-irc';
   this.send("QUIT", message);
-  this.connection.close();
+  this.connection.end();
 };
 
 /**

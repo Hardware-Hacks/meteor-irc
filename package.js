@@ -7,13 +7,14 @@ Package.on_use(function (api) {
   api.add_files(['client/defaults.js', 'client/subscriptions.js'], 'client');
   api.add_files('lib/collections.js', ['client','server']);
   api.add_files([
-    'server/irc.js'
-    ,'server/publications.js'
-    ,'server/security.js'
+    'server/irc.js',
+    'server/publications.js',
+    'server/security.js'
     ], 'server');
   api.export('IRC', 'server');
   api.export([
-    ,'IRCMessages'
-    ,'IRCChannels'
+    'IRCMessages',
+    'IRCChannels',
+    'IRCConnections'
     ], ['server','client']);
 });

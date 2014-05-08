@@ -39,7 +39,9 @@ IRC.prototype.connect = function() {
   this.connection.addListener('connect', function () {
     self.send('NICK', self.config.nick);
     self.send('USER', self.config.username, 8, "*", self.config.realname);
-    self.send.apply(self, ['JOIN'].concat(self.config.channels));
+    _.each(self.config.channels, function(channel) {
+      self.send('JOIN', channel);
+    });
   });
 
   //wrap in a meteor environment in order to use x.insert()

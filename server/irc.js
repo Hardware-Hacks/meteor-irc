@@ -15,11 +15,11 @@ IRC = function IRC(params) {
   };
   this.config = {
     nick: (params && params.nick) || 'meteorirc',
-    password: (params && params.password) || false,
+    password: (params && params.password) || '',
     realname: (params && params.realName) || 'Meteor IRC',
     username: (params && params.username) || 'Meteor-IRC',
     channels: (params && params.channels) || [],
-    debug: (params && params.debug) || false,
+    debug: (params && params.debug) || true,
     stripColors: (params && params.stripColors) || true
   };
 };
@@ -61,19 +61,27 @@ IRC.prototype.connect = function() {
           break;
         case "PRIVMSG":
           var handle = line.nick;
-          var channel   = line.args[0];
+          var channel = line.args[0];
           var text = line.args[1];
+          var action = false;
+          if(text.substring(1, 7) === 'ACTION') {
+            var text = text.substring(8);
+            action = true;
+          }
           //insert irc message into db
           IRCMessages.insert({
             handle: handle,
             channel: channel,
             text: text,
             date_time: new Date(),
-            action: false,
+            action: action,
             irc: true,
             bot: false
           });
-
+          var isLink = text.match(/(https?|ftp):\/\/(([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+(:([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+)?@)?((([a-z0-9]\.|[a-z0-9][a-z0-9-]*[a-z0-9]\.)*[a-z][a-z0-9-]*[a-z0-9]|((\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5])\.){3}(\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5]))(:\d+)?)(((\/+([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)?)?)?(#([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)?/i);
+          if(isLink != null) {
+            IRCLinks.insert({url: isLink[0], channel: channel, ts: +new Date});
+          }
           break;
         case "QUIT":
           if(self.config.debug) console.log("QUIT: " + line.prefix + " " + line.args.join(" "));
@@ -114,6 +122,18 @@ IRC.prototype.join = function(channel) {
 IRC.prototype.part = function(channel) {
   if(this.connection) {
     this.send.apply(this, ['PART'].concat(channel));
+  }
+};
+
+/**
+ *nick 
+ *
+ * sends a nick command to the irc server
+ * @param nickname
+ */
+IRC.prototype.nick = function(nickname) {
+  if(this.connection) {
+    this.send.apply(this, ['NICK'].concat(nickname));
   }
 };
 

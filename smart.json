@@ -3,7 +3,7 @@
   "description": "An IRC API specifically designed for use with Meteor",
   "homepage": "https://github.com/Pent/meteor-irc",
   "author": "Jonathan Pidgeon <jon@empire5design.com>",
-  "version": "0.2.2",
+  "version": "0.2.5",
   "git": "https://github.com/Pent/meteor-irc.git",
   "packages": {}
 }

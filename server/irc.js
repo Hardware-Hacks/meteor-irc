@@ -45,6 +45,7 @@ IRC.prototype.connect = function() {
   });
 
   //wrap in a meteor environment in order to use x.insert()
+  //fixme: on motd, identify with nickserv
   this.connection.addListener('data', Meteor.bindEnvironment(function(chunk) {
     if(self.config.debug) console.log(chunk);
     self.buffer += chunk;

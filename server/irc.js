@@ -16,7 +16,7 @@ IRC = function IRC(params) {
   this.config = {
     nick: (params && params.nick) || 'meteorirc',
     password: (params && params.password) || '',
-    realname: (params && params.realName) || 'Meteor IRC',
+    realname: (params && params.realname) || 'Meteor IRC',
     username: (params && params.username) || 'Meteor-IRC',
     channels: (params && params.channels) || [],
     debug: (params && params.debug) || true,

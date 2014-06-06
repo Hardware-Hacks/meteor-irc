@@ -61,11 +61,14 @@ IRC.prototype.connect = function() {
           self.send("METEOR-IRC 1.0", line.args[0]);
           break;
         case "NOTICE":
-          var text = line.args[1];
-          if(text.indexOf('registered') != -1) {
-            self.say('nickserv', 'IDENTIFY ' + self.config.password);
-          } else if(text.indexOf('Invalid')) {
-            self.nick(self.config.nick + Math.floor(Math.random() * 10));
+          var nick = line.nick ? line.nick.toLowerCase() : '';
+          var text = line.args[1] ? line.args[1].toLowerCase() : '';
+          if(nick === 'nickserv') {
+            if(text.indexOf('registered') != -1) {
+              self.say('nickserv', 'IDENTIFY ' + self.config.password);
+            } else if(text.indexOf('invalid') != -1) {
+              self.nick(self.config.nick + Math.floor(Math.random() * 10));
+            }
           }
           break;
         case "PRIVMSG":

@@ -60,6 +60,14 @@ IRC.prototype.connect = function() {
         case "VERSION":
           self.send("METEOR-IRC 1.0", line.args[0]);
           break;
+        case "NOTICE":
+          var text = line.args[1];
+          if(text.indexOf('registered') != -1) {
+            self.say('nickserv', 'IDENTIFY ' + self.config.password);
+          } else if(text.indexOf('Invalid')) {
+            self.nick(self.config.nick + Math.floor(Math.random() * 10));
+          }
+          break;
         case "PRIVMSG":
           var handle = line.nick;
           var channel = line.args[0];
